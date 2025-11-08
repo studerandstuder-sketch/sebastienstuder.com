@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>__forms registration</title>
+  </head>
+  <body>
+    <!--
+      This file exists only so Netlify can detect and provision the "contact" form at deploy time.
+      Do NOT link to this page in your UI. It's hidden during deploy and never rendered to users.
+    -->
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input name="name" type="text" />
+      <input name="email" type="email" />
+      <textarea name="message"></textarea>
+      <input name="bot-field" type="text" />
+    </form>
+  </body>
+</html>
