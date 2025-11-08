@@ -1,248 +1,301 @@
-/* Clean restart: minimal Next.js page using only Tailwind (no shadcn) */
-"use client";
+// app/page.jsx — drop-in modern landing for your author site
+// Uses Tailwind + framer-motion (already in your deps). Replace links/images as noted.
 
-import { useEffect } from "react";
-import { ChevronRight, ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Mail, ExternalLink, BookOpenText } from "lucide-react";
 
-const AMAZON_AUTHOR_URL =
-  "https://www.amazon.com/stores/Sebastien-Studer/author/B0FWD1YYGS?ref=ap_rdr&isDramIntegrated=true&shoppingPortalEnabled=true&ccs_id=d1d7f8d8-5d07-4cda-bbae-f4fdec7eebd0";
-
-const copy = {
-  hero: {
-    kicker: "Author · Entrepreneur · Creator",
-    title: "Sébastien Studer",
-    subtitle:
-      "Writing at the intersection of love, money, and a life aligned. Essays and books that blend personal stories with practical frameworks.",
+const books = [
+  {
+    title: "Love Exposure: The Hidden Financial Risks of Marriage",
+    tag: "Personal Finance · Relationships",
+    blurb:
+      "A clear‑eyed guide to protecting love, assets, and peace of mind—with score‑style assessments and real‑world tools.",
+    href: "https://www.amazon.com/dp/B0...", // TODO: real link
+    cover: "/covers/love-exposure.jpg", // TODO: place image in public/covers/
   },
-  about: {
-    heading: "About the author",
-    bio: `Sébastien Studer has lived many lives in one. Entrepreneur, husband, father, investor, and writer — he has built, failed, rebuilt, and learned that success without peace is just noise.
-
-Born in France and living between the United States and Brazil, Sébastien has spent years balancing work, health, and family across different worlds and time zones. Through his career in energy and real estate, and his ventures in personal development, he discovered one universal truth: peace begins with awareness — in our health, our habits, and our hearts.
-
-After years of chasing results, Sébastien began simplifying everything — his routines, his priorities, his mindset. He realized that balance doesn’t come from doing more, but from doing less of what doesn’t matter and more of what makes you feel alive. His first priority is peace of mind. He takes time to observe, analyze, and act toward a healthier, happier, and freer life — guided by awareness, action, and peace, the three quiet pillars that hold a meaningful life together.
-
-With clarity, transparency, and alignment, Sébastien continues to humbly improve his relationships, his mind, his health, and his finances — proving that harmony is not found, but created.
-
-When he’s not writing or working, Sébastien enjoys tennis, traveling with his family, and long conversations about life, simplicity, and freedom.
-
-“I don’t write to teach. I write to remember — and to share what balance really feels like when you finally stop chasing it.”
-
-— Sébastien Studer`,
-    highlights: ["Miami-based", "Non‑fiction & fiction", "YouTube & podcasts", "EN/FR/PT"],
+  {
+    title: "Aligned: The Small Steps to a Healthier, Happier Life",
+    tag: "Habits · Health · Clarity",
+    blurb: "Tiny, compounding habits for energy, focus, and a calmer brain.",
+    href: "https://www.amazon.com/dp/B0...",
+    cover: "/covers/aligned.jpg",
   },
-  books: {
-    heading: "Books",
-    items: [
-      {
-        title: "Love Exposure: The Hidden Financial Risks of Marriage",
-        tag: "Personal Finance · Relationships",
-        blurb:
-          "A clear‑eyed guide to protecting love, assets, and peace of mind—with score‑style assessments and real‑world tools.",
-        img: "/covers/love-exposure.jpg",
-        store: AMAZON_AUTHOR_URL,
-      },
-      {
-        title: "Aligned: The Small Steps to a Healthier, Happier Life",
-        tag: "Habits · Health · Clarity",
-        blurb: "Tiny, compounding habits for energy, focus, and a calmer brain.",
-        img: "/covers/aligned.jpg",
-        store: AMAZON_AUTHOR_URL,
-      },
-      {
-        title: "Açaí (Novel)",
-        tag: "Fiction · Family · Tech",
-        blurb:
-          "A modern fable about a boy, a family, and the cost of ‘fixing’ what makes us human.",
-        img: "/covers/acai.png",
-        store: AMAZON_AUTHOR_URL,
-      },
-      {
-        title: "Instinct: The Animal Inside You",
-        tag: "Mindset · Purpose",
-        blurb: "A sharp meditation on place, nature, and the inner compass.",
-        img: "/covers/instinct.jpg",
-        store: AMAZON_AUTHOR_URL,
-      },
-      {
-        title: "AI FIRST",
-        tag: "Technology · Society",
-        blurb:
-          "How we handed our humanity to machines, one decision at a time.",
-        img: "/covers/ai-first.jpg",
-        store: AMAZON_AUTHOR_URL,
-      },
-    ],
+  {
+    title: "Açaí (Novel)",
+    tag: "Fiction · Family · Tech",
+    blurb:
+      "A modern fable about a boy, a family, and the cost of ‘fixing’ what makes us human.",
+    href: "https://www.amazon.com/dp/B0...",
+    cover: "/covers/acai.jpg",
   },
-};
+  {
+    title: "Instinct: The Animal Inside You",
+    tag: "Mindset · Purpose",
+    blurb: "A sharp meditation on place, nature, and the inner compass.",
+    href: "https://www.amazon.com/dp/B0...",
+    cover: "/covers/instinct.jpg",
+  },
+  {
+    title: "AI FIRST",
+    tag: "Technology · Society",
+    blurb:
+      "How we handed our humanity to machines, one decision at a time.",
+    href: "https://www.amazon.com/dp/B0...",
+    cover: "/covers/ai-first.jpg",
+  },
+];
+
+function Container({ children, className = "" }) {
+  return (
+    <div className={`mx-auto max-w-6xl px-5 sm:px-6 lg:px-8 ${className}`}>{children}</div>
+  );
+}
+
+function Pill({ children }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
+      {children}
+    </span>
+  );
+}
+
+function Button({ as = "a", className = "", children, ...props }) {
+  const Comp = as;
+  return (
+    <Comp
+      className={`inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold shadow-sm transition hover:shadow-md focus:outline-none focus:ring-2 focus:ring-slate-400/40 ${className}`}
+      {...props}
+    >
+      {children}
+    </Comp>
+  );
+}
 
 export default function Page() {
-  // JSON-LD Person
-  useEffect(() => {
-    const data = {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      name: "Sébastien Studer",
-      url: "https://sebastienstuder.com",
-      jobTitle: "Author",
-      sameAs: [AMAZON_AUTHOR_URL],
-    };
-    const el = document.createElement("script");
-    el.type = "application/ld+json";
-    el.innerHTML = JSON.stringify(data);
-    document.head.appendChild(el);
-    return () => document.head.removeChild(el);
-  }, []);
-
   return (
     <main className="bg-white text-slate-900">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <a href="#" className="font-semibold">Sébastien Studer</a>
-          <nav className="hidden md:flex items-center gap-6 text-sm">
-            <a href="#books" className="hover:text-slate-700">Books</a>
-            <a href="#about" className="hover:text-slate-700">About</a>
-            <a
-              href={AMAZON_AUTHOR_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 hover:underline"
-            >
-              Amazon <ExternalLink className="h-3.5 w-3.5" />
-            </a>
+      {/* NAV */}
+      <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/70 backdrop-blur">
+        <Container className="flex h-16 items-center justify-between">
+          <a href="#" className="text-lg font-bold tracking-tight">
+            Sébastien <span className="text-slate-500">Studer</span>
+          </a>
+          <nav className="hidden gap-6 text-sm text-slate-600 md:flex">
+            <a href="#books" className="hover:text-slate-900">Books</a>
+            <a href="#about" className="hover:text-slate-900">About</a>
+            <a href="#contact" className="hover:text-slate-900">Contact</a>
           </nav>
-        </div>
+          <div className="flex items-center gap-2">
+            <Button href="#subscribe" className="bg-slate-900 text-white">
+              Subscribe <Mail className="h-4 w-4" />
+            </Button>
+          </div>
+        </Container>
       </header>
 
-      {/* Hero */}
-      <section className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_220px] gap-10 items-center">
-          {/* Text */}
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-              {copy.hero.kicker}
-            </p>
-            <h1 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">
-              {copy.hero.title}
-            </h1>
-            <p className="mt-3 text-lg text-slate-700 max-w-prose">
-              {copy.hero.subtitle}
-            </p>
-            <div className="mt-6 flex items-center gap-3">
-              <a href="#books" className="inline-flex items-center rounded-2xl px-5 py-2.5 text-sm font-medium bg-slate-900 text-white hover:bg-slate-800">
-                Explore Books <ChevronRight className="ml-2 h-4 w-4" />
-              </a>
-              <a href="#about" className="inline-flex items-center rounded-2xl px-5 py-2.5 text-sm font-medium border border-slate-300 hover:bg-slate-50">
-                About
-              </a>
-            </div>
-          </div>
-
-          {/* Photo card (fixed small) */}
-          <aside className="w-full">
-            <div className="rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-              <img
-                src="/author.jpg"
-                alt="Sébastien Studer"
-                className="w-full h-[220px] object-cover"
-              />
-            </div>
-            {/* Newsletter (Netlify form) */}
-            <form
-              name="newsletter"
-              method="POST"
-              data-netlify="true"
-              className="mt-4 flex gap-2"
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        <Container className="py-16 sm:py-20 lg:py-28">
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-6"
             >
-              <input type="hidden" name="form-name" value="newsletter" />
-              <input
-                required
-                name="email"
-                type="email"
-                placeholder="Your email"
-                className="flex-1 h-10 rounded-xl border border-slate-300 px-3 text-sm"
-              />
-              <button type="submit" className="h-10 rounded-xl px-4 text-sm bg-slate-900 text-white hover:bg-slate-800">
-                Subscribe
-              </button>
-            </form>
-          </aside>
-        </div>
+              <Pill>
+                <BookOpenText className="h-3.5 w-3.5" /> Author · Entrepreneur · Creator
+              </Pill>
+              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+                Writing at the intersection of <span className="underline decoration-slate-300">love</span>,
+                <span className="mx-2 underline decoration-slate-300">money</span> & a life aligned.
+              </h1>
+              <p className="max-w-prose text-lg leading-relaxed text-slate-600">
+                Essays and books blending personal stories with practical frameworks. Non‑fiction that feels like a
+                conversation. Fiction that lingers.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Button href="#books" className="bg-slate-900 text-white">
+                  Explore books <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button href="#subscribe" className="border border-slate-200 bg-white text-slate-900">
+                  Subscribe
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="relative"
+            >
+              <div className="rounded-3xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm">
+                <blockquote className="text-lg italic text-slate-700">
+                  “I don’t write to teach. I write to remember — and to share what balance really feels like when you
+                  finally stop chasing it.”
+                </blockquote>
+                <div className="mt-4 text-sm text-slate-500">— Sébastien Studer</div>
+              </div>
+            </motion.div>
+          </div>
+        </Container>
       </section>
 
-      {/* Books */}
-      <section id="books" className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold">{copy.books.heading}</h2>
-            <p className="text-slate-600 mt-1">Non‑fiction that feels like a conversation. Fiction that lingers.</p>
-          </div>
-          <a
-            href={AMAZON_AUTHOR_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm inline-flex items-center gap-1 hover:underline"
-          >
-            View all on Amazon <ExternalLink className="h-3.5 w-3.5" />
-          </a>
-        </div>
-
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center">
-          {copy.books.items.map((b, i) => (
-            <div key={i} className="w-full max-w-[210px]">
-              <div className="aspect-[2/3] w-full overflow-hidden rounded-xl bg-slate-100">
-                <img src={b.img} alt={`${b.title} cover`} className="h-full w-full object-cover" />
-              </div>
-              <h3 className="mt-3 text-sm font-semibold leading-snug">{b.title}</h3>
-              <p className="mt-1 text-xs text-slate-600">{b.tag}</p>
-              <p className="mt-2 text-sm text-slate-700 line-clamp-2">{b.blurb}</p>
-              <div className="mt-3">
-                <a href={b.store} target="_blank" rel="noopener noreferrer" className="inline-block text-sm px-3 py-1.5 rounded-xl border border-slate-300 hover:bg-slate-50">
-                  Amazon
-                </a>
-              </div>
+      {/* BOOKS */}
+      <section id="books" className="border-t border-slate-100 bg-slate-50/60">
+        <Container className="py-14 sm:py-16 lg:py-20">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Books</h2>
+              <p className="mt-2 max-w-prose text-slate-600">
+                Clear, concise, and made to be useful.
+              </p>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* About */}
-      <section id="about" className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl md:text-3xl font-bold">About</h2>
-        <div className="mt-3 text-slate-700 whitespace-pre-line leading-relaxed">
-          {copy.about.bio}
-        </div>
-      </section>
-
-      {/* Contact */}
-      <section id="contact" className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl md:text-3xl font-bold">Contact</h2>
-        <form
-          name="contact"
-          method="POST"
-          data-netlify="true"
-          className="mt-4 grid gap-3 max-w-xl"
-        >
-          <input type="hidden" name="form-name" value="contact" />
-          <input name="name" placeholder="Your name" className="h-10 rounded-xl border border-slate-300 px-3 text-sm" />
-          <input name="email" type="email" placeholder="Your email" className="h-10 rounded-xl border border-slate-300 px-3 text-sm" />
-          <textarea name="message" rows={5} placeholder="How can I help?" className="rounded-xl border border-slate-300 px-3 py-2 text-sm" />
-          <button type="submit" className="h-10 rounded-xl px-4 text-sm bg-slate-900 text-white hover:bg-slate-800 w-fit">
-            Send Message
-          </button>
-        </form>
-      </section>
-
-      <footer className="border-t border-slate-200 py-10">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-sm text-slate-600 flex flex-col gap-3 md:flex-row items-center justify-between">
-          <div>© {new Date().getFullYear()} Sébastien Studer. All rights reserved.</div>
-          <div className="flex items-center gap-4">
-            <a className="hover:underline" href="#books">Books</a>
-            <a className="hover:underline" href="#about">About</a>
-            <a className="hover:underline" href={AMAZON_AUTHOR_URL} target="_blank" rel="noopener noreferrer">Amazon</a>
+            <Button
+              href="https://www.amazon.com/stores/author/" // TODO: replace with your Author page
+              className="border border-slate-200 bg-white"
+            >
+              View all on Amazon <ExternalLink className="h-4 w-4" />
+            </Button>
           </div>
-        </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {books.map((b) => (
+              <motion.article
+                key={b.title}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+              >
+                <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100">
+                  {/* Replace with next/image if you prefer */}
+                  <img
+                    src={b.cover}
+                    alt={b.title}
+                    className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                  />
+                </div>
+                <div className="space-y-3 p-5">
+                  <div className="text-xs uppercase tracking-wide text-slate-500">{b.tag}</div>
+                  <h3 className="text-lg font-semibold leading-snug">{b.title}</h3>
+                  <p className="text-sm leading-relaxed text-slate-600">{b.blurb}</p>
+                  <div className="pt-1">
+                    <Button href={b.href} className="bg-slate-900 text-white">
+                      Amazon <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about">
+        <Container className="py-16 lg:py-20">
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div className="lg:col-span-1">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">About</h2>
+            </div>
+            <div className="prose prose-slate max-w-none lg:col-span-2">
+              <p>
+                Entrepreneur, husband, father, investor, and writer — building across the U.S. and Brazil. I’ve learned
+                that success without peace is just noise. My work explores awareness, action, and peace — the quiet
+                pillars of a meaningful life.
+              </p>
+              <p>
+                I write simply: clearer minds, calmer bodies, better money decisions. When I’m not writing, you’ll find
+                me on a tennis court or sharing long conversations about life, simplicity, and freedom.
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* SUBSCRIBE */}
+      <section id="subscribe" className="border-y border-slate-100 bg-white">
+        <Container className="py-14 lg:py-16">
+          <div className="rounded-3xl border border-slate-200 bg-slate-50/60 p-6 sm:p-8">
+            <div className="grid items-center gap-6 md:grid-cols-3">
+              <div className="md:col-span-2">
+                <h3 className="text-xl font-semibold">Get new essays and book updates</h3>
+                <p className="mt-1 text-sm text-slate-600">No noise. A few thoughtful notes each month.</p>
+              </div>
+              <form
+                className="flex w-full items-center gap-3 md:justify-end"
+                action="https://formspree.io/f/yourformid" // TODO: replace or wire to your backend
+                method="POST"
+              >
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="Your email"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400/30 md:max-w-xs"
+                />
+                <Button as="button" type="submit" className="bg-slate-900 text-white">
+                  Subscribe
+                </Button>
+              </form>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact">
+        <Container className="py-16 lg:py-20">
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Contact</h2>
+              <p className="mt-2 text-slate-600">Speaking, media, rights, consulting, or just say hello.</p>
+            </div>
+            <div className="lg:col-span-2">
+              <form
+                action="https://formspree.io/f/yourformid" // TODO: swap with your form endpoint
+                method="POST"
+                className="grid gap-4 sm:grid-cols-2"
+              >
+                <input
+                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400/30"
+                  placeholder="Your name"
+                  name="name"
+                  required
+                />
+                <input
+                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400/30"
+                  placeholder="Your email"
+                  name="email"
+                  type="email"
+                  required
+                />
+                <textarea
+                  className="sm:col-span-2 min-h-32 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400/30"
+                  placeholder="How can I help?"
+                  name="message"
+                  required
+                />
+                <div className="sm:col-span-2">
+                  <Button as="button" type="submit" className="bg-slate-900 text-white">
+                    Send Message
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="border-t border-slate-100 bg-white">
+        <Container className="flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
+          <p className="text-sm text-slate-500">© {new Date().getFullYear()} Sébastien Studer. All rights reserved.</p>
+          <div className="text-sm text-slate-500">Built with clarity, not noise.</div>
+        </Container>
       </footer>
     </main>
   );
