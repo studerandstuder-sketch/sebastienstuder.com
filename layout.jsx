@@ -2,12 +2,12 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata = {
-  title: "sebastienstuder.com",
-  description: "Author • projects • ideas",
+  title: "Sebastien Studer",
+  description: "Author & projects",
 };
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
   return (
