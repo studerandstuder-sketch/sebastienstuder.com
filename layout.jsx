@@ -14,9 +14,7 @@ export const metadata = {
       "Author of Love Exposure, Aligned, and Açaí. Essays and books that blend personal stories with practical frameworks.",
     url: "https://sebastienstuder.com",
     siteName: "Sébastien Studer",
-    images: [
-      { url: "/author.jpg", width: 1200, height: 630, alt: "Sébastien Studer portrait" },
-    ],
+    images: [{ url: "/author.jpg", width: 1200, height: 630, alt: "Sébastien Studer portrait" }],
     locale: "en_US",
     type: "website",
   },
