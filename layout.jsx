@@ -1,7 +1,5 @@
-// app/layout.jsx
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,7 +7,6 @@ export const metadata = {
   title: "Sébastien Studer — Author",
   description:
     "Official website of Sébastien Studer — author, entrepreneur, and creator. Writing at the intersection of love, money, and a life aligned.",
-  authors: [{ name: "Sébastien Studer", url: "https://sebastienstuder.com" }],
   openGraph: {
     title: "Sébastien Studer — Author",
     description:
@@ -39,7 +36,6 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${inter.className} bg-white text-slate-900`}>
         {children}
-        <Analytics />
       </body>
     </html>
   );
